@@ -1,0 +1,164 @@
+-- Owzyn Admin - Birebir Görsel Tasarımı
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local UIStroke = Instance.new("UIStroke")
+local Title = Instance.new("TextLabel")
+local Pages = Instance.new("Frame")
+local TabButtons = Instance.new("Frame")
+
+-- Sayfalar
+local KomutlarPage = Instance.new("ScrollingFrame")
+local AdminListPage = Instance.new("ScrollingFrame")
+local AyarlarPage = Instance.new("Frame")
+
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.Name = "OwzynAdmin"
+
+-- Ana Panel
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+MainFrame.Position = UDim2.new(0.5, -160, 0.5, -190)
+MainFrame.Size = UDim2.new(0, 320, 0, 380)
+MainFrame.Active = true
+MainFrame.Draggable = true -- Paneli sürükleyebilirsin
+
+UICorner.CornerRadius = UDim.new(0, 12)
+UICorner.Parent = MainFrame
+
+-- Rainbow Çerçeve Efekti
+UIStroke.Parent = MainFrame
+UIStroke.Thickness = 2.5
+UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+spawn(function()
+    while task.wait() do
+        local hue = tick() % 5 / 5
+        UIStroke.Color = Color3.fromHSV(hue, 0.7, 1)
+    end
+end)
+
+-- Başlık
+Title.Parent = MainFrame
+Title.Size = UDim2.new(1, 0, 0, 50)
+Title.BackgroundTransparency = 1
+Title.Font = Enum.Font.GothamBold
+Title.Text = "OWZYN ADMIN"
+Title.TextColor3 = Color3.fromRGB(0, 255, 150)
+Title.TextSize = 18
+
+-----------------------------------------------------------
+-- SAYFA YÖNETİMİ FONKSİYONU
+-----------------------------------------------------------
+local function hideAll()
+    KomutlarPage.Visible = false
+    AdminListPage.Visible = false
+    AyarlarPage.Visible = false
+end
+
+-- 1. KOMUTLAR SAYFASI (Görseldeki gibi liste)
+KomutlarPage.Name = "Komutlar"
+KomutlarPage.Parent = MainFrame
+KomutlarPage.Position = UDim2.new(0.05, 0, 0.15, 0)
+KomutlarPage.Size = UDim2.new(0.9, 0, 0.8, 0)
+KomutlarPage.BackgroundTransparency = 1
+KomutlarPage.ScrollBarThickness = 2
+KomutlarPage.Visible = true
+
+local uiList = Instance.new("UIListLayout", KomutlarPage)
+uiList.Padding = UDim.new(0, 8)
+
+local function AddCmd(txt)
+    local l = Instance.new("TextLabel", KomutlarPage)
+    l.Size = UDim2.new(1, 0, 0, 30)
+    l.BackgroundTransparency = 1
+    l.Font = Enum.Font.Gotham
+    l.Text = txt
+    l.TextColor3 = Color3.fromRGB(200, 200, 200)
+    l.TextXAlignment = Enum.TextXAlignment.Left
+    l.TextSize = 14
+end
+
+AddCmd(";speed (KULLANICI) (HIZ)")
+AddCmd(";jumppower (KULLANICI) (ZIPLAMA)")
+AddCmd(";sabah / ;akşam")
+AddCmd(";fly (KULLANICI)")
+AddCmd(";to (KULLANICI)")
+AddCmd(";re (YENİLEN)")
+AddCmd(";map31 (MAPI SIFIRLA)")
+
+-- 2. ADMIN LİSTESİ (Görseldeki yeşil etiketli stil)
+AdminListPage.Parent = MainFrame
+AdminListPage.Position = KomutlarPage.Position
+AdminListPage.Size = KomutlarPage.Size
+AdminListPage.BackgroundTransparency = 1
+AdminListPage.Visible = false
+
+local function AddAdmin(rank, name, color)
+    local f = Instance.new("TextLabel", AdminListPage)
+    f.Size = UDim2.new(1, 0, 0, 40)
+    f.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    f.Text = " ["..rank.."] "..name
+    f.TextColor3 = color
+    f.Font = Enum.Font.GothamBold
+    f.TextXAlignment = Enum.TextXAlignment.Left
+    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 6)
+end
+
+AddAdmin("KURUCU", "Owzyn_Owner", Color3.fromRGB(0, 255, 120))
+AddAdmin("ADMİN", "Hazar_Dev", Color3.fromRGB(0, 255, 120))
+
+-- 3. AYARLAR (Renk paleti ve Prefix)
+AyarlarPage.Parent = MainFrame
+AyarlarPage.Position = KomutlarPage.Position
+AyarlarPage.Size = KomutlarPage.Size
+AyarlarPage.BackgroundTransparency = 1
+AyarlarPage.Visible = false
+
+local prefixLabel = Instance.new("TextLabel", AyarlarPage)
+prefixLabel.Text = "PREFIX AYARLA"
+prefixLabel.Size = UDim2.new(1,0,0,20)
+prefixLabel.TextColor3 = Color3.fromRGB(255,255,255)
+prefixLabel.BackgroundTransparency = 1
+
+local prefixBox = Instance.new("TextBox", AyarlarPage)
+prefixBox.Position = UDim2.new(0,0,0,30)
+prefixBox.Size = UDim2.new(1,0,0,40)
+prefixBox.BackgroundColor3 = Color3.fromRGB(30,30,30)
+prefixBox.Text = ";"
+prefixBox.TextColor3 = Color3.fromRGB(255,255,255)
+Instance.new("UICorner", prefixBox)
+
+-----------------------------------------------------------
+-- ALT BUTONLAR (Gezinme)
+-----------------------------------------------------------
+local btnFrame = Instance.new("Frame", MainFrame)
+btnFrame.Size = UDim2.new(1, 0, 0, 40)
+btnFrame.Position = UDim2.new(0, 0, 0.9, 0)
+btnFrame.BackgroundTransparency = 1
+
+local function createTab(name, pos, func)
+    local b = Instance.new("TextButton", btnFrame)
+    b.Size = UDim2.new(0.3, 0, 1, 0)
+    b.Position = pos
+    b.Text = name
+    b.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    b.TextColor3 = Color3.fromRGB(255, 255, 255)
+    b.Font = Enum.Font.GothamBold
+    Instance.new("UICorner", b)
+    b.MouseButton1Click:Connect(func)
+end
+
+createTab("KOMUTLAR", UDim2.new(0.02, 0, 0, 0), function() hideAll() KomutlarPage.Visible = true end)
+createTab("LİSTE", UDim2.new(0.35, 0, 0, 0), function() hideAll() AdminListPage.Visible = true end)
+createTab("AYARLAR", UDim2.new(0.68, 0, 0, 0), function() hideAll() AyarlarPage.Visible = true end)
+
+-- MAP 31 Komutu Fonksiyonu
+local function map31()
+    for _, v in pairs(game.Workspace:GetDescendants()) do
+        if v:IsA("Part") or v:IsA("MeshPart") then
+            v.Material = Enum.Material.Neon
+            v.Color = Color3.fromRGB(255, 255, 255)
+        end
+    end
+end
